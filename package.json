@@ -1,0 +1,62 @@
+{
+    "name": "@nera-static/starter-portfolio",
+    "version": "1.0.0",
+    "description": "A ready-to-edit Nera portfolio for a designer on @nera-static/theme-business: home, projects with image galleries, about, a contact form, navigation, responsive images, social links, a sitemap and imprint and privacy placeholders. One small script for the contact form.",
+    "type": "module",
+    "scripts": {
+        "lint": "eslint .",
+        "test": "vitest",
+        "prepare": "husky"
+    },
+    "files": [
+        "config",
+        "pages",
+        "theme",
+        "CHANGELOG.md"
+    ],
+    "keywords": [
+        "nera",
+        "nera-starter",
+        "static-site-generator",
+        "starter",
+        "portfolio"
+    ],
+    "nera": {
+        "starter": {
+            "label": "Portfolio",
+            "description": "A ready-to-edit Nera portfolio for a designer on @nera-static/theme-business: home, projects with image galleries, about, a contact form, navigation, responsive images, social links, a sitemap and imprint and privacy placeholders. One small script for the contact form."
+        }
+    },
+    "author": "Michael Becker",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/seebaermichi/nera-starter-portfolio.git"
+    },
+    "bugs": {
+        "url": "https://github.com/seebaermichi/nera-starter-portfolio/issues"
+    },
+    "homepage": "https://github.com/seebaermichi/nera-starter-portfolio#readme",
+    "publishConfig": {
+        "access": "public"
+    },
+    "engines": {
+        "node": ">=22.12.0"
+    },
+    "dependencies": {
+        "@nera-static/plugin-contact-form": "^1.1.1",
+        "@nera-static/plugin-images": "^1.0.2",
+        "@nera-static/plugin-navigation": "^3.1.1",
+        "@nera-static/plugin-sitemap": "^1.1.0",
+        "@nera-static/plugin-social-media-links": "^2.3.0",
+        "@nera-static/theme-business": "^1.0.2"
+    },
+    "devDependencies": {
+        "@nera-static/nera": "^1.15.0",
+        "eslint": "^10.13.0",
+        "husky": "^9.1.7",
+        "sharp": "^0.35.5",
+        "vitest": "^5.0.5",
+        "yaml": "^2.9.1"
+    }
+}
