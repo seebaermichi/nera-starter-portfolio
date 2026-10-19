@@ -83,8 +83,14 @@ describe('package.json starter contract', () => {
     })
 })
 
-// The plugins whose templates render t() keys; step 3 vendors them unchanged.
+// The plugins whose templates theme/views/vendor/ holds unchanged.
 const TEMPLATE_PLUGINS = ['plugin-contact-form', 'plugin-images', 'plugin-navigation', 'plugin-social-media-links']
+
+// The seams of theme-business this starter fills (ROADMAP-themes.md §S2.4, §S3.2).
+const SEAMS = ['hero-media', 'card-media', 'contact-form', 'nav-main', 'footer-extra']
+
+// plugin-social-media-links' icon partial, which loads Font Awesome from a CDN.
+const CDN_PARTIAL = 'fontawesome-cdn-link.pug'
 
 /** Lists the files under `dir` as paths relative to it, sorted. */
 function listFiles(dir) {
@@ -93,6 +99,59 @@ function listFiles(dir) {
         .map((entry) => path.relative(dir, path.join(entry.parentPath, entry.name)))
         .sort()
 }
+
+describe('theme folder', () => {
+    it('ships none of the scaffold-default views, which would shadow the theme', () => {
+        for (const file of ['theme/views/layouts/layout.pug', 'theme/views/pages/default.pug']) {
+            expect(fs.existsSync(path.join(root, file)), file).toBe(false)
+        }
+    })
+
+    it('fills the seams, each with the plugin template the theme names for it', () => {
+        const includes = {
+            'hero-media': '/vendor/plugin-images/picture',
+            'card-media': '/vendor/plugin-images/picture',
+            'contact-form': '/vendor/plugin-contact-form/contact-form',
+            'nav-main': '/vendor/plugin-navigation/partials/link-list-navigation',
+            'footer-extra': '/vendor/plugin-social-media-links/social-media-links',
+        }
+        expect(Object.keys(includes)).toEqual(SEAMS)
+        for (const seam of SEAMS) {
+            const file = path.join(root, 'theme/views/partials', `${seam}.pug`)
+            expect(fs.readFileSync(file, 'utf-8'), seam).toMatch(new RegExp(`^include ${includes[seam]}$`, 'm'))
+        }
+    })
+
+    it('reads the card and hero images from the `image` frontmatter key plugin-images resolves', () => {
+        const partial = (seam) => fs.readFileSync(path.join(root, 'theme/views/partials', `${seam}.pug`), 'utf-8')
+        expect(partial('card-media')).toContain('item.meta.images.image')
+        expect(partial('hero-media')).toContain('meta.images.image')
+        expect(partial('hero-media')).toContain('loading: \'eager\'')
+        expect(readConfig('images').frontmatter_keys).toContain('image')
+    })
+
+    it('ships no CDN partial', () => {
+        expect(listFiles(path.join(root, 'theme')).filter((f) => path.basename(f) === CDN_PARTIAL)).toEqual([])
+    })
+
+    it.each(TEMPLATE_PLUGINS)('vendors the templates of the installed %s unchanged', (plugin) => {
+        const source = path.join(root, 'node_modules/@nera-static', plugin, 'views')
+        const vendor = path.join(root, 'theme/views/vendor', plugin)
+        const templates = listFiles(source).filter((f) => f.endsWith('.pug') && path.basename(f) !== CDN_PARTIAL)
+        expect(templates).not.toEqual([])
+        expect(listFiles(vendor)).toEqual(templates)
+        for (const file of templates) {
+            expect(fs.readFileSync(path.join(vendor, file), 'utf-8'), file)
+                .toBe(fs.readFileSync(path.join(source, file), 'utf-8'))
+        }
+    })
+
+    it('ships the contact form\'s client script unchanged', () => {
+        const source = path.join(root, 'node_modules/@nera-static/plugin-contact-form/views/contact-form.js')
+        expect(fs.readFileSync(path.join(root, 'theme/assets/js/contact-form.js'), 'utf-8'))
+            .toBe(fs.readFileSync(source, 'utf-8'))
+    })
+})
 
 /** Parses `config/<name>.yaml`. */
 function readConfig(name) {

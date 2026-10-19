@@ -1,0 +1,4 @@
+//- Seam override: a page's `image` frontmatter (alt text: `image_alt`) as a
+//- responsive <picture> from plugin-images, loaded eagerly as the hero.
+include /vendor/plugin-images/picture
++picture(meta.images && meta.images.image, { alt: meta.image_alt, class: 'hero__image', loading: 'eager' })

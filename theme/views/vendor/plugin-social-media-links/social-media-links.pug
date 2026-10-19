@@ -1,0 +1,17 @@
+if app.socialMediaLinks && app.socialMediaLinks.length > 0
+    nav.social-media-links(aria-label=app.socialMediaLinksLabel || 'Social media')
+        ul.social-media-links__list
+            each link in app.socialMediaLinks
+                li.social-media-links__item
+                    //- `open_in_new_tab: false` drops the target; pug omits an undefined attribute.
+                    - const linkTarget = app.socialMediaLinksNewTab === false ? undefined : '_blank'
+                    a.social-media-links__link(href=link.href, title=link.name, target=linkTarget, rel="noopener noreferrer")
+                        //- Icons are escaped by default. Set `icon_raw: true`
+                        //- on an entry to inject the value as HTML — needed
+                        //- for icon-font markup or an inline SVG, and an
+                        //- explicit opt-in because the value comes from YAML.
+                        if link.icon_raw
+                            span.social-media-links__icon !{link.icon}
+                        else
+                            span.social-media-links__icon #{link.icon}
+                        span.social-media-links__label #{link.name}

@@ -1,0 +1,10 @@
+include ../helper/mixins
+
+//- `label` names the <nav> landmark (aria-label), so a page with several
+//- menus stays navigable by screen reader; it goes through the site's t().
+mixin pipeSeparatedNav(elements=app.nav.elements, className='', rootPath='/', label=(typeof t === 'function' ? t('Navigation') : 'Navigation'))
+    nav(class=`${className}`, aria-label=label)
+        include ../helper/setup
+            if index !== 0
+                | &nbsp;|&nbsp;
+            +link(item, activeClass, activePathClass)

@@ -1,0 +1,3 @@
+mixin link(item, activeClass, activePathClass)
+  - const navBlock = (app.nav && app.nav.navClass) || 'nav'
+  a(href=item.href, class=[`${navBlock}__link`, activeClass, activePathClass]) #{ item.name }
