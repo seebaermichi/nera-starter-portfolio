@@ -1,0 +1,7 @@
+# Overrides of the theme's config/theme.yaml (deep-merged, arrays replaced).
+# Labels the legal checks of `nera check` recognise (Imprint, Privacy).
+footer_links:
+    - label: Imprint
+      href: /imprint.html
+    - label: Privacy
+      href: /privacy.html

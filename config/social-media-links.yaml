@@ -1,0 +1,8 @@
+aria_label: Social media
+# No target="_blank" (nera check: a11y-target-blank).
+open_in_new_tab: false
+# A placeholder: replace it with your own profiles before you deploy. Icons are
+# plain text or an inline SVG (`icon_raw: true`), never an icon font from a CDN.
+social_media_links:
+    - name: Mastodon
+      href: https://example.com/@your-name

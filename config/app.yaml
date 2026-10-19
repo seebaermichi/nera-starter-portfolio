@@ -1,0 +1,51 @@
+lang: en
+name: Studio Linea
+robots: index,follow
+theme: business
+# Replace with your site's real address before you deploy: the sitemap needs
+# absolute URLs, and without `origin` it is not written.
+origin: https://example.com
+
+# Where you work, shown in the footer and next to the contact form.
+# Placeholders: replace both values before you deploy. There is no street,
+# phone, email or opening hours: a portfolio needs none of them, and the
+# contact form takes the place of an email address (config/contact-form.yaml).
+business:
+    city: Berlin
+    country: Germany
+
+translations:
+    en:
+        # The language's own name, shown by the theme's language switch
+        language_name: English
+        # Theme texts: the English keys work as they are; after
+        # `nera new --lang <code>`, translate the copied entry
+        Skip to content: Skip to content
+        Main navigation: Main navigation
+        Language: Language
+        Legal: Legal
+        Opening hours: Opening hours
+        Closed: Closed
+        Contact details: Contact details
+        Phone: Phone
+        Email: Email
+        # footer_links labels (config/theme.yaml)
+        Imprint: Imprint
+        Privacy: Privacy
+        # plugin-navigation (the label of its simple and pipe-separated forms)
+        Navigation: Navigation
+        # plugin-contact-form (config/contact-form.yaml)
+        Message from the website: Message from the website
+        Send message: Send message
+        Please fill in all required fields.: Please fill in all required fields.
+        Please enter a valid email address.: Please enter a valid email address.
+        'Yes': 'Yes'
+        'No': 'No'
+        Your name: Your name
+        Your email: Your email
+        Message: Message
+        I have read the privacy notice: I have read the privacy notice
+        # The form's intro and consent are HTML; the consent links the
+        # privacy page of this language
+        contact_intro: Tell me about your project, its scope and its timeline. I reply within a few days.
+        contact_consent: 'Sending opens your own email program; nothing is sent by this website. See the <a href="/privacy.html">privacy notice</a>.'

@@ -1,0 +1,32 @@
+# The form has no backend: on submit the client script
+# (theme/assets/js/contact-form.js) opens the visitor's own mail client with
+# the message filled in. Every text is a translation key (config/app.yaml).
+#
+# A placeholder: replace it with your own address before you deploy. It is
+# never printed as readable text.
+recipient: hello@example.com
+subject: Message from the website
+submit_label: Send message
+error_required: Please fill in all required fields.
+error_email: Please enter a valid email address.
+checkbox_checked_label: 'Yes'
+checkbox_unchecked_label: 'No'
+intro_text: contact_intro
+consent_text: contact_consent
+fields:
+    - name: name
+      label: Your name
+      type: text
+      required: true
+    - name: email
+      label: Your email
+      type: email
+      required: true
+    - name: message
+      label: Message
+      type: textarea
+      required: true
+    - name: privacy
+      label: I have read the privacy notice
+      type: checkbox
+      required: true

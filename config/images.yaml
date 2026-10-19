@@ -1,0 +1,8 @@
+# The home hero is rendered eagerly through the hero-media seam, so the first
+# Markdown image does not compete with it.
+eager_first: false
+# The theme writes no og:image tag, so the 1200×630 crop would go unused.
+og: false
+# The hero and the project cards come from the `image` frontmatter key (alt
+# text: `image_alt`).
+frontmatter_keys: [image]
