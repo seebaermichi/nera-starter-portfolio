@@ -1,3 +1,15 @@
 //- Seam override: a card's image (plugin-images), lazily loaded.
+//-
+//- `sizes` follows theme-business' `.cards` grid (assets/css/theme.css):
+//- `repeat(auto-fill, minmax(min(100%, 16rem), 1fr))` with a 1.5rem gap, in
+//- a 72rem container with 1.5rem padding, at a root size of 1.0625 × the
+//- browser's (rem 17px, `em` 16px by default). So 1 column up to 38.78em,
+//- 2 to 57.38em, 3 to 75.97em, then 4 of at most 17.14em. Each threshold is
+//- rounded up and each width declared at its largest, never below the cell.
+//- Recompute it when you change the theme's `--theme-size-*` tokens.
 include /vendor/plugin-images/picture
-+picture(item.meta.images && item.meta.images.image, { alt: item.meta.image_alt, class: 'card__image' })
++picture(item.meta.images && item.meta.images.image, {
+    alt: item.meta.image_alt,
+    class: 'card__image',
+    sizes: '(min-width: 76em) 17.2em, (min-width: 57.4em) 34vw, (min-width: 38.8em) 50vw, 100vw',
+})

@@ -1,4 +1,16 @@
 //- Seam override: a page's `image` frontmatter (alt text: `image_alt`) as a
 //- responsive <picture> from plugin-images, loaded eagerly as the hero.
+//-
+//- `sizes` follows theme-business' `.hero__inner` (assets/css/theme.css):
+//- full width below 48em; from 48em the media sits in the `1fr` column of
+//- `1.1fr 1fr` with a 4.5rem gap, in a 72rem container with 1.5rem padding
+//- (rem 17px, `em` 16px by default), at most 32.63em wide. Its 5:4 frame
+//- crops a 4:3 image at the sides, so the image is drawn 16/15 as wide:
+//- 51vw, at most 34.9em. Its own value, not `sizes` in config/images.yaml.
 include /vendor/plugin-images/picture
-+picture(meta.images && meta.images.image, { alt: meta.image_alt, class: 'hero__image', loading: 'eager' })
++picture(meta.images && meta.images.image, {
+    alt: meta.image_alt,
+    class: 'hero__image',
+    loading: 'eager',
+    sizes: '(min-width: 76.5em) 34.9em, (min-width: 48em) 51vw, 100vw',
+})

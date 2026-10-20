@@ -4,5 +4,11 @@ eager_first: false
 # The theme writes no og:image tag, so the 1200×630 crop would go unused.
 og: false
 # The hero and the project cards come from the `image` frontmatter key (alt
-# text: `image_alt`).
+# text: `image_alt`); their seams in theme/views/partials/ set their own sizes.
 frontmatter_keys: [image]
+# The `sizes` of every Markdown image. Only the gallery pages carry them here,
+# so it follows theme-business' `.gallery` grid (assets/css/theme.css): 2
+# columns, 3 from 48em, 4 from 64em, in a 72rem container with 1.5rem padding
+# (rem 17px, `em` 16px by default), capped at 17.14em from 76.5em. An image you
+# add to any other page takes `?sizes=100vw` (or its own width) in its URL.
+sizes: '(min-width: 76.5em) 17.2em, (min-width: 64em) 25vw, (min-width: 48em) 34vw, 50vw'

@@ -90,6 +90,12 @@ const TEMPLATE_PLUGINS = ['plugin-contact-form', 'plugin-images', 'plugin-naviga
 // The seams of theme-business this starter fills (ROADMAP-themes.md §S2.4, §S3.2).
 const SEAMS = ['hero-media', 'card-media', 'contact-form', 'nav-main', 'footer-extra']
 
+// The `sizes` derived from theme-business' assets/css/theme.css: the
+// `.cards` grid, the `.hero__inner` columns and the `.gallery` grid.
+const CARD_SIZES = '(min-width: 76em) 17.2em, (min-width: 57.4em) 34vw, (min-width: 38.8em) 50vw, 100vw'
+const HERO_SIZES = '(min-width: 76.5em) 34.9em, (min-width: 48em) 51vw, 100vw'
+const GALLERY_SIZES = '(min-width: 76.5em) 17.2em, (min-width: 64em) 25vw, (min-width: 48em) 34vw, 50vw'
+
 // plugin-social-media-links' icon partial, which loads Font Awesome from a CDN.
 const CDN_PARTIAL = 'fontawesome-cdn-link.pug'
 
@@ -131,6 +137,13 @@ describe('theme folder', () => {
         expect(readConfig('images').frontmatter_keys).toContain('image')
     })
 
+    it('sizes the card and hero images to the theme\'s grid, not the gallery\'s config value', () => {
+        const partial = (seam) => fs.readFileSync(path.join(root, 'theme/views/partials', `${seam}.pug`), 'utf-8')
+        expect(partial('card-media')).toContain(`sizes: '${CARD_SIZES}'`)
+        expect(partial('hero-media')).toContain(`sizes: '${HERO_SIZES}'`)
+        expect(readConfig('images').sizes).toBe(GALLERY_SIZES)
+    })
+
     it('ships no CDN partial', () => {
         expect(listFiles(path.join(root, 'theme')).filter((f) => path.basename(f) === CDN_PARTIAL)).toEqual([])
     })
@@ -159,10 +172,10 @@ function readConfig(name) {
     return parse(fs.readFileSync(path.join(root, 'config', `${name}.yaml`), 'utf-8'))
 }
 
-/** The literal keys of every `t('…')` call in the .pug files under `dir`. */
-function literalKeys(dir) {
+/** The literal keys of every `t('…')` call in the .pug files under `dir`, outside the `skip` subfolders. */
+function literalKeys(dir, skip = []) {
     return listFiles(dir)
-        .filter((f) => f.endsWith('.pug'))
+        .filter((f) => f.endsWith('.pug') && !skip.includes(f.split(path.sep)[0]))
         .flatMap((f) => [...fs.readFileSync(path.join(dir, f), 'utf-8').matchAll(/\bt\('([^']+)'\)/g)])
         .map((match) => match[1])
 }
@@ -197,10 +210,12 @@ describe('site config', () => {
         expect(app.business).toEqual({ city: expect.any(String), country: expect.any(String) })
     })
 
-    it('translates every theme, plugin and footer-link key', () => {
+    it('translates every theme, plugin, seam-override and footer-link key', () => {
         const keys = new Set([
             'language_name',
             ...literalKeys(path.join(root, 'node_modules/@nera-static/theme-business/views')),
+            // The site's own views; vendor/ holds the plugins' templates, scanned below.
+            ...literalKeys(path.join(root, 'theme/views'), ['vendor']),
             ...TEMPLATE_PLUGINS.flatMap((plugin) => literalKeys(path.join(root, 'node_modules/@nera-static', plugin, 'views'))),
             ...readConfig('theme').footer_links.map((link) => link.label),
             ...contactFormKeys(readConfig('contact-form')),
@@ -233,7 +248,7 @@ describe('site config', () => {
     })
 
     it('configures images, navigation and social links as the theme expects', () => {
-        expect(readConfig('images')).toEqual({ eager_first: false, og: false, frontmatter_keys: ['image'] })
+        expect(readConfig('images')).toEqual({ eager_first: false, og: false, frontmatter_keys: ['image'], sizes: GALLERY_SIZES })
         const navigation = readConfig('navigation')
         expect(Object.keys(navigation)).toEqual(['elements'])
         expect(navigation.elements.map((element) => element.href)).toEqual([

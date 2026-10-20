@@ -76,6 +76,12 @@ function scaffold(name, extra = []) {
 
 const read = (dir, file) => fs.readFileSync(path.join(dir, file), 'utf-8')
 
+// The `sizes` a seam override passes to plugin-images' picture mixin.
+const seamSizes = (seam) => read(root, `theme/views/partials/${seam}.pug`).match(/^ {4}sizes: '([^']+)',$/m)[1]
+
+// Every `sizes` attribute in `html`, on <source> and <img> alike.
+const sizesOf = (html) => [...html.matchAll(/\ssizes="([^"]*)"/g)].map(([, sizes]) => sizes)
+
 // Every file below `dir`, as paths relative to it.
 function walk(dir, base = dir) {
     return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -236,6 +242,7 @@ describe('nera new --starter <this repo>', () => {
         expect(hero[0]).toMatch(/<img class="hero__image" src="\/_img\/hero-[0-9a-f]{8}-\d+\.jpg"/)
         expect(hero[0]).toContain('alt="A rust-red disc inside a thin ochre ring beside a teal block, above sand-coloured waves"')
         expect(hero[0]).toContain('loading="eager"')
+        expect(sizesOf(hero[0])).toEqual(Array(3).fill(seamSizes('hero-media')))
         // The hero is the home's only image, so nothing on it loads lazily.
         expect(home.match(/<img\b/g)).toHaveLength(1)
 
@@ -256,6 +263,8 @@ describe('nera new --starter <this repo>', () => {
             expect(card, PROJECTS[i]).toMatch(new RegExp(`<img class="card__image" src="/_img/${PROJECTS[i]}-1-[0-9a-f]{8}-\\d+\\.jpg"`))
             expect(card, PROJECTS[i]).toMatch(/ alt="\S[^"]*"/)
             expect(card, PROJECTS[i]).toContain('loading="lazy"')
+            // One per <source> and the <img>, all the seam's grid value.
+            expect(sizesOf(card), PROJECTS[i]).toEqual(Array(3).fill(seamSizes('card-media')))
             expect(card, PROJECTS[i]).toMatch(/<p class="card__text">\S/)
         }
     })
@@ -271,6 +280,7 @@ describe('nera new --starter <this repo>', () => {
                 expect(figure, project).toContain('<picture>')
                 expect(figure, project).toMatch(/ alt="\S[^"]*"/)
                 expect(figure, project).toContain('loading="lazy"')
+                expect(sizesOf(figure), project).toEqual(Array(3).fill(parse(read(root, 'config/images.yaml')).sizes))
                 expect(figure, project).toMatch(/<figcaption class="nera-image__caption">\S[^<]*<\/figcaption>/)
             }
             expect(page, project).not.toContain('loading="eager"')
