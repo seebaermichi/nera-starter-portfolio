@@ -3,6 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { parse } from 'yaml'
+import sharp from 'sharp'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -241,5 +242,39 @@ describe('site config', () => {
         const social = readConfig('social-media-links')
         expect(social.open_in_new_tab).toBe(false)
         expect(social.social_media_links).toHaveLength(1)
+    })
+})
+
+// The sample images scripts/sample-images.js renders (plan D2).
+const IMAGES_DIR = path.join(root, 'theme/assets/images')
+
+// What plugin-images names its variants (`<base>-<hash8>-<width>.<ext>`), plus
+// the usual hand-made `-800w` / `@2x` suffixes: the starter ships originals only.
+const VARIANT_NAME = /(-[0-9a-f]{8}-\d+|-\d+w|@\dx)\.\w+$/
+
+describe('sample images', () => {
+    const images = listFiles(IMAGES_DIR)
+
+    it('are a few JPEGs, the hero among them', () => {
+        expect(images).toContain('hero.jpg')
+        expect(images.length).toBeLessThanOrEqual(12)
+        for (const file of images) expect(file, file).toMatch(/^[a-z0-9-]+\.jpg$/)
+    })
+
+    it('ships originals only, no resized variants and no image cache', () => {
+        expect(images.filter((file) => VARIANT_NAME.test(file))).toEqual([])
+        expect(fs.existsSync(path.join(root, '.nera-cache'))).toBe(false)
+        expect(listFiles(path.join(root, 'theme')).filter((f) => f.split(path.sep).includes('.nera-cache'))).toEqual([])
+    })
+
+    it.each(images)('%s is at most 100 KB and wide enough for plugin-images to scale down', async (file) => {
+        const source = path.join(IMAGES_DIR, file)
+        expect(fs.statSync(source).size).toBeLessThanOrEqual(100 * 1024)
+        const { format, width, height } = await sharp(source).metadata()
+        expect(format).toBe('jpeg')
+        expect(width).toBeGreaterThanOrEqual(1200)
+        expect(width).toBeLessThanOrEqual(1600)
+        // 4:3, the ratio of theme-business' cards, gallery cells and hero.
+        expect(width * 3).toBe(height * 4)
     })
 })
