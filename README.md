@@ -10,10 +10,10 @@ A ready-to-edit portfolio for a designer or illustrator, built with the
 [`@nera-static/theme-business`](https://www.npmjs.com/package/@nera-static/theme-business):
 home with a hero image, a projects index with one image card per project,
 three projects with captioned image galleries, about, a contact form,
-navigation, responsive images, social links, a sitemap and imprint and privacy
-placeholders. One small script for the contact form, no third-party requests;
-a fresh site passes `nera build --check` and `nera validate` without a single
-finding.
+navigation, responsive images, social links, a sitemap, schema.org structured
+data and imprint and privacy placeholders. One small script for the contact
+form, no third-party requests; a fresh site passes `nera build --check` and
+`nera validate` without a single finding.
 
 ## Usage
 
@@ -41,12 +41,16 @@ pages never name the person or studio, so `--name` renames the whole site.
   theme and plugin texts
 - `config/theme.yaml`, `contact-form.yaml`, `navigation.yaml`, `images.yaml`
   (frontmatter `image` becomes a responsive picture), `social-media-links.yaml`
+- `config/structured-data.yaml`: the studio as a schema.org
+  `ProfessionalService`, written as JSON-LD into the `<head>` of every page;
+  `config/plugin-order.yaml` runs that plugin last
 - `theme/views/partials/`: the theme's seams, filled with the plugins' output
 - `theme/views/vendor/`: the plugins' published templates
 - `theme/assets/js/contact-form.js`: the contact form's script, which opens
   the visitor's own mail program (the form has no backend)
 - `theme/assets/images/`: the hero and three images per project
-- plugins: contact-form, images, navigation, social-media-links, sitemap
+- plugins: contact-form, images, navigation, social-media-links, sitemap,
+  structured-data
 
 ## Sample images
 
@@ -103,17 +107,23 @@ MIT
 ## First steps
 
 After `nera new` the files are yours: a starter has no update path. Each
-file named in steps 1 to 5 marks its placeholders as such.
+file named in steps 1 to 6 marks its placeholders as such.
 
 1. Replace `origin: https://example.com` in `config/app.yaml` with your
-   site's real address. The sitemap is built from it.
+   site's real address. The sitemap and the structured data's URLs are
+   built from it.
 2. Replace the city and country under `business:` in `config/app.yaml`.
    They show in the footer and next to the contact form.
-3. Replace `recipient: hello@example.com` in `config/contact-form.yaml` with
+3. Replace the same city and country and your profiles in
+   `config/structured-data.yaml`, which reads neither `business:` nor
+   `config/social-media-links.yaml`, and set its `type`:
+   `ProfessionalService` for a studio, `Person` for yourself alone. Its
+   `image` is the hero image. Your name is `name` in `config/app.yaml`.
+4. Replace `recipient: hello@example.com` in `config/contact-form.yaml` with
    the address the contact form writes to.
-4. Replace the social link in `config/social-media-links.yaml`.
-5. Replace `pages/imprint.md` and `pages/privacy.md` with your own legal texts.
-6. Replace the sample projects in `pages/projects/`, the copy of the other
+5. Replace the social link in `config/social-media-links.yaml`.
+6. Replace `pages/imprint.md` and `pages/privacy.md` with your own legal texts.
+7. Replace the sample projects in `pages/projects/`, the copy of the other
    pages, the sample images in `theme/assets/images/` and the grey
    placeholder icon `theme/assets/favicon.ico` with your own. A new project
    is a page on `pages/gallery.pug` with an `order`, an `image` and an

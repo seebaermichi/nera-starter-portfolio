@@ -1,0 +1,7 @@
+//- The page's schema.org JSON-LD, for the <head> of a layout:
+//-     include /vendor/plugin-structured-data/index
+//- meta.structuredData is already serialised and escaped by the plugin
+//- (no `<`, `>` or `&` left in it), so the unescaped `!=` cannot end the
+//- script element. Pages without it get no tag at all.
+if meta && meta.structuredData
+    script(type="application/ld+json")!= meta.structuredData

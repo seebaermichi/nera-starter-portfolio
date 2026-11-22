@@ -90,10 +90,12 @@ describe('package.json starter contract', () => {
 })
 
 // The plugins whose templates theme/views/vendor/ holds unchanged.
-const TEMPLATE_PLUGINS = ['plugin-contact-form', 'plugin-images', 'plugin-navigation', 'plugin-social-media-links']
+const TEMPLATE_PLUGINS = [
+    'plugin-contact-form', 'plugin-images', 'plugin-navigation', 'plugin-social-media-links', 'plugin-structured-data',
+]
 
 // The seams of theme-business this starter fills (ROADMAP-themes.md §S2.4, §S3.2).
-const SEAMS = ['hero-media', 'card-media', 'contact-form', 'nav-main', 'footer-extra']
+const SEAMS = ['hero-media', 'card-media', 'contact-form', 'nav-main', 'footer-extra', 'head-extra']
 
 // The `sizes` derived from theme-business' assets/css/theme.css: the
 // `.cards` grid, the `.hero__inner` columns and the `.gallery` grid.
@@ -126,6 +128,7 @@ describe('theme folder', () => {
             'contact-form': '/vendor/plugin-contact-form/contact-form',
             'nav-main': '/vendor/plugin-navigation/partials/link-list-navigation',
             'footer-extra': '/vendor/plugin-social-media-links/social-media-links',
+            'head-extra': '/vendor/plugin-structured-data/index',
         }
         expect(Object.keys(includes)).toEqual(SEAMS)
         for (const seam of SEAMS) {
