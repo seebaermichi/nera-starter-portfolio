@@ -21,6 +21,7 @@ const DEPENDENCIES = [
     '@nera-static/plugin-navigation',
     '@nera-static/plugin-sitemap',
     '@nera-static/plugin-social-media-links',
+    '@nera-static/plugin-structured-data',
     '@nera-static/theme-business',
 ]
 
@@ -36,7 +37,7 @@ describe('package.json starter contract', () => {
         expect(pkg.keywords).toEqual(['nera', 'nera-starter', 'static-site-generator', 'starter', 'portfolio'])
     })
 
-    it('depends on the business theme and its five plugins, with caret ranges', () => {
+    it('depends on the business theme and its six plugins, with caret ranges', () => {
         expect(Object.keys(pkg.dependencies).sort()).toEqual(DEPENDENCIES)
         for (const range of Object.values(pkg.dependencies)) expect(range).toMatch(/^\^\d+\.\d+\.\d+$/)
         expect(pkg.peerDependencies).toBeUndefined()
@@ -51,6 +52,10 @@ describe('package.json starter contract', () => {
         const [major, minor, patch] = pkg.dependencies['@nera-static/plugin-contact-form']
             .slice(1).split('.').map(Number)
         expect(major === 1 && (minor > 1 || (minor === 1 && patch >= 1))).toBe(true)
+    })
+
+    it('uses plugin-structured-data 1.1 or later (it names the entity after app.name)', () => {
+        expect(pkg.dependencies['@nera-static/plugin-structured-data']).toMatch(/^\^1\.([1-9]|\d{2,})\./)
     })
 
     it('has no lifecycle scripts besides prepare', () => {
@@ -257,6 +262,30 @@ describe('site config', () => {
         const social = readConfig('social-media-links')
         expect(social.open_in_new_tab).toBe(false)
         expect(social.social_media_links).toHaveLength(1)
+    })
+
+    it('runs plugin-structured-data last, in the shape core reads', () => {
+        expect(readConfig('plugin-order')).toEqual({ 'plugin-order': [{ end: ['plugin-structured-data'] }] })
+    })
+
+    it('describes the studio as a ProfessionalService that mirrors app.business and the social links', () => {
+        const { entity, ...rest } = readConfig('structured-data')
+        expect(rest).toEqual({})
+        expect(entity).toEqual({
+            type: 'ProfessionalService',
+            image: '/images/hero.jpg',
+            address: {
+                addressLocality: app.business.city,
+                addressCountry: app.business.country,
+            },
+            same_as: readConfig('social-media-links').social_media_links.map((link) => link.href),
+        })
+        // theme/assets/ is committed and copied into public/, so the image is there after a build.
+        expect(fs.existsSync(path.join(root, 'theme/assets', entity.image))).toBe(true)
+    })
+
+    it('leaves the entity\'s name to `name` in config/app.yaml, which `nera new --name` sets', () => {
+        expect(readConfig('structured-data').entity).not.toHaveProperty('name')
     })
 })
 

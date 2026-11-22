@@ -1,0 +1,24 @@
+# @nera-static/plugin-structured-data: the schema.org JSON-LD in the <head> of
+# every page, which tells search engines and AI assistants who runs the site.
+# Placeholders: replace every value before you deploy, together with the
+# matching ones in `business:` in config/app.yaml and the profile in
+# config/social-media-links.yaml (this file reads neither). The full list of
+# keys is in the plugin's README.
+#
+# The site URL comes from `origin` in config/app.yaml; relative URLs below
+# are made absolute against it.
+
+entity:
+    # A schema.org type: ProfessionalService for a studio, or Person for a
+    # one-person portfolio (then leave out `address`, or keep only the city).
+    type: ProfessionalService
+    # No `name`: the entity is named after `name` in config/app.yaml, which
+    # `nera new --name` sets. Add one only if the two names differ.
+    image: /images/hero.jpg
+    # Where you work, as in `business:` in config/app.yaml.
+    address:
+        addressLocality: Berlin
+        addressCountry: Germany
+    # Your profiles, as in config/social-media-links.yaml.
+    same_as:
+        - https://example.com/@your-name

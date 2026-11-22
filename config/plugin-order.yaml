@@ -1,0 +1,5 @@
+# Plugins run alphabetically, except those listed here. Structured data runs
+# last, so it sees every page and the images plugin's output.
+plugin-order:
+    - end:
+          - plugin-structured-data
